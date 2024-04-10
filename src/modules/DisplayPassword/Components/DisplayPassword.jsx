@@ -18,6 +18,15 @@ function DisplayPassword() {
   setData(storedData);
 }, []);
 
+ // Supprimer une donnée du localStorage
+ const handleDelete = (index) => {
+  const newData = [...data]; // Créer une copie des données
+  newData.splice(index, 1); // Supprimer l'élément à l'index spécifié
+  localStorage.setItem('mydata', JSON.stringify(newData)); // Mettre à jour les données dans le localStorage
+  setData(newData); // Mettre à jour l'état avec les nouvelles données
+};
+
+
   return (
     <div>
       <h3>Vos Mot de Passe</h3>
@@ -30,7 +39,7 @@ function DisplayPassword() {
             <p>{datas.domaine}</p>
             <input type={type} value={datas.password} readOnly />
             <AiFillEye className="eyes" onClick={typeSubmit} />
-            <Link className="delete-btn">Delete</Link>
+            <Link className="delete-btn" onClick={()=>handleDelete(index)}>Delete</Link>
           </div>
         ))
       ) : (
