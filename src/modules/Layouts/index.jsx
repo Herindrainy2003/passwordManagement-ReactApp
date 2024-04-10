@@ -1,3 +1,4 @@
+import { BiLogInCircle } from "react-icons/bi";
 import "./Displaypassword.css";
 import DisplayPassword from "../DisplayPassword/Components/DisplayPassword";
 import ChoiseBtn from "../ChoiseBtn";
@@ -7,40 +8,46 @@ import { useState } from "react";
 
 
 function Layouts() {
-   const [Form , setForm] = useState(false);
-   const [card , setCard] = useState(false);
-    return (
-        <aside>
-            {/**L'affichage des mot de passe */}
-            <div className="container">
-                <DisplayPassword />
-            </div>
+  const [Form, setForm] = useState(false);
+  const [card, setCard] = useState(false);
+  return (
 
-            {/**Les deux boutons */}
-            <section>
-             <button onClick={()=>setForm(true)}>AJOUTEZ</button>
-             <button onClick={()=>setCard(true)}>GENERER</button>
-            </section>
+    <aside>
 
-            {/**Les formulaires d'ajout */}
-            <div className="form-container">
-               {
-                (Form ? <AddPassword /> : null)
-               }
-                
-            </div>
+      {/**L'affichage des mot de passe */}
+      <div className="container">
+        <DisplayPassword />
+      </div>
+
+      {/**Les deux boutons */}
+      <section>
+        <button onClick={() => setForm(true)}>AJOUTEZ</button>
+        <button onClick={() => setCard(true)}>GENERER</button>
+      </section>
+
+      {/**Les formulaires d'ajout */}
+      <div className="form-container">
+        {
+          (Form ? <AddPassword /> : null)
+        }
+
+      </div>
 
 
-            {/**Les mot de passe generer  */}
+      {/**Les mot de passe generer  */}
 
-            <article>
-              {
-                (card ? <PasswordGenerate /> : null)
-              }  
-            </article>
-        </aside>
+      <article>
+        {
+          (card ? <PasswordGenerate /> : null)
+        }
+      </article>
+    
+      <div className="btn-logout">
+        <BiLogInCircle />
+      </div>
+    </aside>
 
-    )
+  )
 }
 
 export default Layouts;

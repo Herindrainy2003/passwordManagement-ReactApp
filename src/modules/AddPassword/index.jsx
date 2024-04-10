@@ -1,79 +1,19 @@
 import React, { useEffect, useState } from "react";
-
+import { useForm } from "react-hook-form";
 
 function AddPassword() {
-     /**pour les formulaires  */
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
-     const [focused, setFocused] = useState(false);
-     const [completed, setCompleted] = useState(false);
- 
-     const handleFocus = () => {
-         setFocused(true);
-         if (completed) {
-             formAnim.faceDirection(1);
-         } else {
-             formAnim.faceDirection(0);
-         }
-     };
- 
-     const handleBlur = () => {
-         formAnim.resetClasses();
-     };
- 
-     const handleInputChange = () => {
-         setCompleted(true);
-         if (!inputRef.current.value) {
-             setCompleted(false);
-         }
-         if (completed) {
-             formAnim.faceDirection(1);
-         } else {
-             formAnim.faceDirection(0);
-         }
-     };
- 
-     const handleSubmit = () => {
-         setFocused(true);
-         formAnim.resetClasses();
- 
-         if (completed) {
-             setSubmitDisabled(true);
-             setTimeout(() => {
-                 formAnim.faceDirection(4);
-                 setInputValue('');
-                 setCompleted(false);
- 
-                 setTimeout(() => {
-                     setSubmitDisabled(false);
-                     formAnim.resetClasses();
-                 }, 2000);
-             }, 1000);
-         } else {
-             setTimeout(() => {
-                 formAnim.faceDirection(5);
- 
-                 setTimeout(() => {
-                     formAnim.resetClasses();
-                 }, 2000);
-             }, 1000);
-         }
-     };
- 
-     const inputRef = React.createRef();
-     const [submitDisabled, setSubmitDisabled] = useState(false);
-     const [inputValue, setInputValue] = useState('');
- 
-     React.useEffect(() => {
-         setTimeout(() => {
-             if (!focused) {
-                 inputRef.current.focus();
-             }
-         }, 2000);
-     }, []);
-
-
-
-     useEffect(() => {
+    /**Stocker nos donnes dans local storage */
+    const onSubmit = (result) => {
+        const olData = (JSON.parse(localStorage.getItem('mydata'))) || []; /**recuperer tous les donnes du localstorage  */
+        olData.push(result) //*ajoutez notre nouveau donnes//
+        localStorage.setItem('mydata', JSON.stringify(olData));
+        reset();
+        window.location.reload();
+    }
+    /**Le javascript de notre formulaires 3D */
+    useEffect(() => {
         const formAnim = {
             $form: document.getElementById('form'),
             animClasses: ['face-up-left', 'face-up-right', 'face-down-left', 'face-down-right', 'form-complete', 'form-error'],
@@ -126,32 +66,32 @@ function AddPassword() {
             });
         });
 
-        $submit.addEventListener('click', () => {
-            focused = true;
-            formAnim.resetClasses();
-            if (completed) {
-                $submit.disabled = true;
-                setTimeout(() => {
-                    formAnim.faceDirection(4);
-                    $input.forEach(input => {
-                        input.value = '';
-                    });
-                    completed = false;
+        // $submit.addEventListener('click', () => {
+        //     focused = true;
+        //     formAnim.resetClasses();
+        //     if (completed) {
+        //         $submit.disabled = true;
+        //         setTimeout(() => {
+        //             formAnim.faceDirection(4);
+        //             $input.forEach(input => {
+        //                 input.value = '';
+        //             });
+        //             completed = false;
 
-                    setTimeout(() => {
-                        $submit.disabled = false;
-                        formAnim.resetClasses();
-                    }, 2000);
-                }, 1000);
-            } else {
-                setTimeout(() => {
-                    formAnim.faceDirection(5);
-                    setTimeout(() => {
-                        formAnim.resetClasses();
-                    }, 2000);
-                }, 1000);
-            }
-        });
+        //             setTimeout(() => {
+        //                 $submit.disabled = false;
+        //                 formAnim.resetClasses();
+        //             }, 2000);
+        //         }, 1000);
+        //     } else {
+        //         setTimeout(() => {
+        //             formAnim.faceDirection(5);
+        //             setTimeout(() => {
+        //                 formAnim.resetClasses();
+        //             }, 2000);
+        //         }, 1000);
+        //     }
+        // });
 
         setTimeout(() => {
             if (!focused) {
@@ -163,26 +103,24 @@ function AddPassword() {
         return () => {
             // Detach event listeners or perform any other clean-up
         };
-    }, []); // Empty dependency array means the effect runs only once after the initial render
+    }, []);
     return (
         <div>
-            <form id="form">
+            <form id="form" onSubmit={handleSubmit(onSubmit)}>
+
                 <div className="form">
                     <div className="field email">
                         <div className="icon" />
                         <input
-                            ref={inputRef}
                             className="input"
-                            type="email"
+                            type="text"
                             id="email"
                             placeholder="Domaine"
                             autoComplete="off"
-                            onFocus={handleFocus}
-                            onBlur={handleBlur}
-                            onChange={handleInputChange}
-
+                            {...register("domaine")}
                         />
                     </div>
+
                     <div className="field password">
                         <div className="icon" />
                         <input
@@ -190,16 +128,15 @@ function AddPassword() {
                             type="password"
                             id="password"
                             placeholder="Password"
-                            onFocus={handleFocus}
-                            onBlur={handleBlur}
-                            onChange={handleInputChange}
+                            {...register('password', { required: true })}
                         />
                     </div>
+
                     <button
                         className="button"
+                        type="submit"
                         id="submit"
                         onClick={handleSubmit}
-                        disabled={submitDisabled}
                     >
                         AJOUTER
                         <div className="side-top-bottom" />
